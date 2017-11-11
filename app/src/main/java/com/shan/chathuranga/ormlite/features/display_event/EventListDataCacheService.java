@@ -1,4 +1,4 @@
-package com.shan.chathuranga.ormlite.service;
+package com.shan.chathuranga.ormlite.features.display_event;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -8,14 +8,14 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.shan.chathuranga.ormlite.DatabaseHelper;
-import com.shan.chathuranga.ormlite.gson_models.ActorParser;
-import com.shan.chathuranga.ormlite.gson_models.CommitParser;
-import com.shan.chathuranga.ormlite.gson_models.EventParser;
-import com.shan.chathuranga.ormlite.gson_models.RepoParser;
-import com.shan.chathuranga.ormlite.ormlight_models.ActorTable;
-import com.shan.chathuranga.ormlite.ormlight_models.CommitTable;
-import com.shan.chathuranga.ormlite.ormlight_models.EventTable;
-import com.shan.chathuranga.ormlite.ormlight_models.RepoTable;
+import com.shan.chathuranga.ormlite.models.events.gson.ActorParser;
+import com.shan.chathuranga.ormlite.models.events.gson.CommitParser;
+import com.shan.chathuranga.ormlite.models.events.gson.EventParser;
+import com.shan.chathuranga.ormlite.models.events.gson.RepoParser;
+import com.shan.chathuranga.ormlite.models.events.ormlight.ActorTable;
+import com.shan.chathuranga.ormlite.models.events.ormlight.CommitTable;
+import com.shan.chathuranga.ormlite.models.events.ormlight.EventTable;
+import com.shan.chathuranga.ormlite.models.events.ormlight.RepoTable;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -28,12 +28,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class EventDataCacheService extends IntentService {
+public class EventListDataCacheService extends IntentService {
 
-    private static final String TAG = EventDataCacheService.class.getSimpleName();
+    private static final String TAG = EventListDataCacheService.class.getSimpleName();
 
-    public EventDataCacheService() {
-        super("EventDataCacheService");
+    public EventListDataCacheService() {
+        super("EventListDataCacheService");
     }
 
     @Override

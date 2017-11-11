@@ -1,31 +1,23 @@
-package com.shan.chathuranga.ormlite.activities;
+package com.shan.chathuranga.ormlite.features.display_event;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.ImageView;
 
 import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.shan.chathuranga.ormlite.DatabaseHelper;
 import com.shan.chathuranga.ormlite.R;
-import com.shan.chathuranga.ormlite.adapters.EventListAdapter;
-import com.shan.chathuranga.ormlite.gson_models.EventParser;
-import com.shan.chathuranga.ormlite.ormlight_models.ActorTable;
-import com.shan.chathuranga.ormlite.ormlight_models.CommitTable;
-import com.shan.chathuranga.ormlite.ormlight_models.EventTable;
-import com.shan.chathuranga.ormlite.ormlight_models.RepoTable;
-import com.shan.chathuranga.ormlite.service.EventDataCacheService;
+import com.shan.chathuranga.ormlite.models.events.gson.EventParser;
+import com.shan.chathuranga.ormlite.models.events.ormlight.ActorTable;
+import com.shan.chathuranga.ormlite.models.events.ormlight.CommitTable;
+import com.shan.chathuranga.ormlite.models.events.ormlight.EventTable;
+import com.shan.chathuranga.ormlite.models.events.ormlight.RepoTable;
 import com.shan.chathuranga.ormlite.utility.NetworkStatus;
 import com.shan.chathuranga.ormlite.utility.RecyclerViewDividerVertical;
 
@@ -46,7 +38,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 
-public class MainActivity extends AppCompatActivity {
+public class EventListActivity extends AppCompatActivity {
 
     @BindView(R.id.list)
     RecyclerView recyclerView;
@@ -59,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<EventParser> eventParserDataList;
     private ArrayList<EventTable> eventTableDataList;
     private DatabaseHelper databaseHelper;
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = EventListActivity.class.getSimpleName();
     private static final String BASE_URL = "https://api.github.com/";
 
     @Override
@@ -82,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkNetworkConnectivity() {
-        NetworkStatus status = new NetworkStatus(MainActivity.this);
+        NetworkStatus status = new NetworkStatus(EventListActivity.this);
         if (status.isOnline()) {
             getDataFromServer();
         } else {
@@ -138,12 +130,12 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         eventParserDataList.addAll(eventParsers);
-                        EventListAdapter listAdapter = new EventListAdapter(MainActivity.this, eventParserDataList,null);
+                        EventListAdapter listAdapter = new EventListAdapter(EventListActivity.this, eventParserDataList,null);
                         recyclerView.setAdapter(listAdapter);
                         recyclerView.addItemDecoration(new RecyclerViewDividerVertical(5));
-                        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                        recyclerView.setLayoutManager(new LinearLayoutManager(EventListActivity.this));
 
-                        Intent intent = new Intent(MainActivity.this, EventDataCacheService.class);
+                        Intent intent = new Intent(EventListActivity.this, EventListDataCacheService.class);
                         intent.putParcelableArrayListExtra("event_data", eventParserDataList);
                         startService(intent);
 
@@ -163,10 +155,10 @@ public class MainActivity extends AppCompatActivity {
             List<EventTable> allEvents = dbHelper.getAll(EventTable.class);
             eventTableDataList.addAll(allEvents);
 
-            EventListAdapter listAdapter = new EventListAdapter(MainActivity.this,null,eventTableDataList);
+            EventListAdapter listAdapter = new EventListAdapter(EventListActivity.this,null,eventTableDataList);
             recyclerView.setAdapter(listAdapter);
             recyclerView.addItemDecoration(new RecyclerViewDividerVertical(5));
-            recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+            recyclerView.setLayoutManager(new LinearLayoutManager(EventListActivity.this));
 
         } catch (SQLException e) {
             e.printStackTrace();

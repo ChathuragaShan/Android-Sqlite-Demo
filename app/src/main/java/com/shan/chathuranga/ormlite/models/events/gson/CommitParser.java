@@ -1,5 +1,5 @@
 
-package com.shan.chathuranga.ormlite.gson_models;
+package com.shan.chathuranga.ormlite.models.events.gson;
 
 import android.os.Parcel;
 import android.os.Parcelable;

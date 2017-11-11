@@ -1,4 +1,4 @@
-package com.shan.chathuranga.ormlite.adapters;
+package com.shan.chathuranga.ormlite.features.display_event;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,9 +8,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.shan.chathuranga.ormlite.R;
-import com.shan.chathuranga.ormlite.gson_models.EventParser;
-import com.shan.chathuranga.ormlite.ormlight_models.EventTable;
-import com.squareup.picasso.Callback;
+import com.shan.chathuranga.ormlite.models.events.gson.EventParser;
+import com.shan.chathuranga.ormlite.models.events.ormlight.EventTable;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
