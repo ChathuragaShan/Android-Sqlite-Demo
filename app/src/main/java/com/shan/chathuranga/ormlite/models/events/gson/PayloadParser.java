@@ -13,7 +13,7 @@ public class PayloadParser implements Parcelable {
 
     @SerializedName("push_id")
     @Expose
-    private Integer pushId;
+    private Long pushId;
     @SerializedName("size")
     @Expose
     private Integer size;
@@ -69,7 +69,7 @@ public class PayloadParser implements Parcelable {
     }
 
     protected PayloadParser(Parcel in) {
-        this.pushId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.pushId = (Long) in.readValue(Long.class.getClassLoader());
         this.size = (Integer) in.readValue(Integer.class.getClassLoader());
         this.distinctSize = (Integer) in.readValue(Integer.class.getClassLoader());
         this.ref = in.readString();
@@ -95,11 +95,11 @@ public class PayloadParser implements Parcelable {
         }
     };
 
-    public Integer getPushId() {
+    public Long getPushId() {
         return pushId;
     }
 
-    public void setPushId(Integer pushId) {
+    public void setPushId(Long pushId) {
         this.pushId = pushId;
     }
 

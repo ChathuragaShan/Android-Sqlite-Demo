@@ -2,8 +2,9 @@ package com.shan.chathuranga.ormlite;
 
 import android.app.Application;
 
-import com.jakewharton.picasso.OkHttp3Downloader;
-import com.squareup.picasso.Picasso;
+import com.shan.chathuranga.ormlite.dagger.components.DaggerGlobalComponents;
+import com.shan.chathuranga.ormlite.dagger.components.GlobalComponents;
+import com.shan.chathuranga.ormlite.dagger.modules.ContextModule;
 
 /**
  * Created by ChathurangaShan on 10/17/2017.
@@ -11,15 +12,25 @@ import com.squareup.picasso.Picasso;
 
 public class Global extends Application {
 
+    private static Global application;
+    private GlobalComponents globalComponent;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        application = this;
 
-        Picasso.Builder builder = new Picasso.Builder(this);
-        builder.downloader(new OkHttp3Downloader(this));
-        Picasso built = builder.build();
-        //built.setIndicatorsEnabled(true);
-        //built.setLoggingEnabled(true);
-        Picasso.setSingletonInstance(built);
+        globalComponent = DaggerGlobalComponents.builder()
+                .contextModule(new ContextModule(application))
+                .build();
+
+    }
+
+    public static Global application(){
+        return application;
+    }
+
+    public GlobalComponents getGlobalComponent() {
+        return globalComponent;
     }
 }
