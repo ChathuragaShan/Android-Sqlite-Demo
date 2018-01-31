@@ -14,6 +14,9 @@ import com.shan.chathuranga.ormlite.APIService;
 import com.shan.chathuranga.ormlite.DatabaseHelper;
 import com.shan.chathuranga.ormlite.Global;
 import com.shan.chathuranga.ormlite.R;
+import com.shan.chathuranga.ormlite.dagger.components.ActivityComponents;
+import com.shan.chathuranga.ormlite.dagger.components.DaggerActivityComponents;
+import com.shan.chathuranga.ormlite.dagger.modules.EventListModule;
 import com.shan.chathuranga.ormlite.models.events.gson.EventParser;
 import com.shan.chathuranga.ormlite.models.events.ormlight.ActorTable;
 import com.shan.chathuranga.ormlite.models.events.ormlight.CommitTable;
@@ -35,7 +38,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Retrofit;
 
 public class EventListActivity extends AppCompatActivity {
 
@@ -51,18 +53,28 @@ public class EventListActivity extends AppCompatActivity {
     @Inject
     APIService apiService;
 
+    @Inject
+    NetworkStatus status;
+
+    @Inject
+    EventListAdapter listAdapter;
+
     private DisposableSingleObserver<List<EventParser>> eventDisposableSingleObserver;
     private ArrayList<EventParser> eventParserDataList;
     private ArrayList<EventTable> eventTableDataList;
     private static final String TAG = EventListActivity.class.getSimpleName();
-    //private static final String BASE_URL = "https://api.github.com/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        ActivityComponents activityComponent = DaggerActivityComponents.builder()
+                .eventListModule(new EventListModule(this))
+                .globalComponents(Global.application().getGlobalComponent())
+                .build();
 
-        Global.application().getGlobalComponent().inject(this);
+        activityComponent.inject(this);
 
         ButterKnife.bind(this);
         Stetho.initializeWithDefaults(this);
@@ -77,8 +89,8 @@ public class EventListActivity extends AppCompatActivity {
         super.onStart();
     }
 
-    private void checkNetworkConnectivity() {
-        NetworkStatus status = new NetworkStatus(EventListActivity.this);
+    @Inject
+    public void checkNetworkConnectivity() {
         if (status.isOnline()) {
             getDataFromServer();
         } else {
@@ -117,7 +129,7 @@ public class EventListActivity extends AppCompatActivity {
                         }
 
                         eventParserDataList.addAll(eventParsers);
-                        EventListAdapter listAdapter = new EventListAdapter(EventListActivity.this, eventParserDataList,null);
+                        listAdapter.notifyDataChange(eventParserDataList,null);
                         recyclerView.setAdapter(listAdapter);
                         recyclerView.addItemDecoration(new RecyclerViewDividerVertical(5));
                         recyclerView.setLayoutManager(new LinearLayoutManager(EventListActivity.this));
@@ -143,7 +155,7 @@ public class EventListActivity extends AppCompatActivity {
             List<EventTable> allEvents = dbHelper.getAll(EventTable.class);
             eventTableDataList.addAll(allEvents);
 
-            EventListAdapter listAdapter = new EventListAdapter(EventListActivity.this,null,eventTableDataList);
+            listAdapter.notifyDataChange(null,eventTableDataList);
             recyclerView.setAdapter(listAdapter);
             recyclerView.addItemDecoration(new RecyclerViewDividerVertical(5));
             recyclerView.setLayoutManager(new LinearLayoutManager(EventListActivity.this));
@@ -158,12 +170,6 @@ public class EventListActivity extends AppCompatActivity {
         //LocalBroadcastManager.getInstance(this).unregisterReceiver(imageLoaded);
         super.onStop();
     }
-
-
-    /*private interface EventService {
-        @GET("events")
-        Single<List<EventParser>> getEvents();
-    }*/
 
     @Override
     protected void onDestroy() {

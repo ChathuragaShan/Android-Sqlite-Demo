@@ -27,14 +27,20 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.ViewHolder> {
 
+    private Context context;
     private ArrayList<EventParser> eventParsers;
     private ArrayList<EventTable> eventTables;
-    private Context context;
 
-    public EventListAdapter(Context context, ArrayList<EventParser> onlineData,ArrayList<EventTable> offlineData) {
-        this.eventParsers = onlineData;
-        this.eventTables = offlineData;
+    public EventListAdapter(Context context) {
         this.context = context;
+        this.eventParsers = new ArrayList<>();
+        this.eventTables = new ArrayList<>();
+    }
+
+    public void notifyDataChange(ArrayList<EventParser> onlineData,ArrayList<EventTable> offlineData){
+        eventParsers = onlineData;
+        eventTables = offlineData;
+        notifyDataSetChanged();
     }
 
     @Override
